@@ -2,12 +2,176 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Interface Boundary</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kernel Law</title>
+  <meta name="description" content="Kernel Law — Observer limits and identifiability." />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
-  <h1>Interface Boundary</h1>
-  <p>Technical notes on observer limits, kernels, and identifiability.</p>
-  <p>Site initializing.</p>
+  <!-- Top Banner -->
+  <header class="top-banner" role="banner">
+    <div class="banner-inner">
+      <div class="banner-title">Kernel Law</div>
+      <div class="banner-subtitle">Observer limits and identifiability</div>
+    </div>
+  </header>
+
+  <!-- Page Body: Left Nav + Main Content -->
+  <div class="page">
+    <!-- Left Sidebar Navigation -->
+    <aside class="sidebar" role="navigation" aria-label="Primary">
+      <div class="sidebar-inner">
+        <div class="nav-group">
+          <div class="nav-heading">Kernel Law</div>
+          <a class="nav-link" href="#overview">Overview</a>
+          <a class="nav-link" href="#formal-statement">Formal statement</a>
+          <a class="nav-link" href="#history-fibers">History fibers</a>
+          <a class="nav-link" href="#residue-freezeout">Residue &amp; freeze-out</a>
+          <a class="nav-link" href="#markovian-limit">Markovian limit</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-heading">Observer Boundary</div>
+          <a class="nav-link" href="#observer-kernel">Observer kernel</a>
+          <a class="nav-link" href="#indistinguishability">Indistinguishability</a>
+          <a class="nav-link" href="#access-ladder">Observer-access ladder</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-heading">Results</div>
+          <a class="nav-link" href="#negative-theorem">Negative theorem</a>
+          <a class="nav-link" href="#boundary-crossing">Boundary crossing</a>
+          <a class="nav-link" href="#feedback-stabilized-observer">Feedback-stabilized observer</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-heading">Downloads</div>
+          <a class="nav-link" href="#technical-notes">Technical notes</a>
+          <a class="nav-link" href="#code">Code</a>
+          <a class="nav-link" href="#hashes">Hashes</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-heading">Meta</div>
+          <a class="nav-link" href="#scope-nonclaims">Scope &amp; non-claims</a>
+          <a class="nav-link" href="#citation">Citation</a>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="tiny">interfaceboundary.org</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content" role="main">
+      <section id="overview" class="section">
+        <h1>Overview</h1>
+        <p>Drop your cleaned, canonical overview here.</p>
+      </section>
+
+      <section id="formal-statement" class="section">
+        <h2>Formal statement</h2>
+        <p>Drop the Kernel Law statement here (minimal, exact).</p>
+      </section>
+
+      <section id="history-fibers" class="section">
+        <h2>History fibers</h2>
+        <p>Define the history-augmented space and why state-only kernels are domain-wrong.</p>
+      </section>
+
+      <section id="residue-freezeout" class="section">
+        <h2>Residue &amp; freeze-out</h2>
+        <p>Explain filtration / reachability reduction and what “residue” means operationally.</p>
+      </section>
+
+      <section id="markovian-limit" class="section">
+        <h2>Markovian limit</h2>
+        <p>State the recovery condition where the standard state-space model is valid.</p>
+      </section>
+
+      <hr class="rule" />
+
+      <section id="observer-kernel" class="section">
+        <h2>Observer kernel</h2>
+        <p>Define the Markov-1, fixed stride, fixed K observer kernel assumptions.</p>
+      </section>
+
+      <section id="indistinguishability" class="section">
+        <h2>Indistinguishability</h2>
+        <p>Record the kernel-bounded negative result and what it does and does not claim.</p>
+      </section>
+
+      <section id="access-ladder" class="section">
+        <h2>Observer-access ladder</h2>
+        <p>Axis A: temporal correlation access. Axis B: adaptive scale selection. Keep it tight.</p>
+      </section>
+
+      <hr class="rule" />
+
+      <section id="negative-theorem" class="section">
+        <h2>Negative theorem</h2>
+        <p>Short, precise statement + conditions + demonstrated substrates.</p>
+      </section>
+
+      <section id="boundary-crossing" class="section">
+        <h2>Boundary crossing</h2>
+        <p>Minimal demonstrated upgrades that break equivalence.</p>
+      </section>
+
+      <section id="feedback-stabilized-observer" class="section">
+        <h2>Feedback-stabilized observer</h2>
+        <p>Summarize the crowned result and its protocol constraints.</p>
+      </section>
+
+      <hr class="rule" />
+
+      <section id="technical-notes" class="section">
+        <h2>Technical notes</h2>
+        <p>
+          Add download links here, e.g.:
+          <br />
+          <a href="./downloads/Kernel_Bounded_Indistinguishability_Technical_Note_v1_1.pdf">Kernel-Bounded Indistinguishability (PDF)</a>
+        </p>
+      </section>
+
+      <section id="code" class="section">
+        <h2>Code</h2>
+        <p>
+          Add links to exact scripts, e.g.:
+          <br />
+          <a href="./downloads/kernel_joint.py">kernel_joint.py</a>
+        </p>
+      </section>
+
+      <section id="hashes" class="section">
+        <h2>Hashes</h2>
+        <p>Optional: list SHA256 for PDFs/scripts for canonical referencing.</p>
+      </section>
+
+      <hr class="rule" />
+
+      <section id="scope-nonclaims" class="section">
+        <h2>Scope &amp; non-claims</h2>
+        <p>One place to say what is and is not asserted. Keep it explicit.</p>
+      </section>
+
+      <section id="citation" class="section">
+        <h2>Citation</h2>
+        <p>Provide a simple citation block (and version tag if you want).</p>
+      </section>
+
+      <footer class="footer">
+        <div class="tiny">© <span id="year"></span> Kernel Law</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- no-JS preference: year is optional; remove this script if you want zero JS -->
+  <script>
+    document.getElementById("year").textContent = String(new Date().getFullYear());
+  </script>
 </body>
 </html>
+
