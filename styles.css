@@ -1,0 +1,209 @@
+/* --- Base --- */
+:root{
+  --bg: #ffffff;
+  --ink: #000000;
+  --muted: #444444;
+  --rule: #e6e6e6;
+
+  --sidebar-w: 280px;
+
+  /* Print-ish intent: 3" banner at ~96dpi ≈ 288px */
+  --banner-h: 288px;
+
+  /* Subtitle ~ 3/4" at ~96dpi ≈ 72px */
+  --subtitle-size: 72px;
+
+  /* Title: prominent but not ridiculous */
+  --title-size: 110px;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  height: 100%;
+}
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Improve anchor jumps with a fixed-ish banner */
+html{
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--banner-h) + 16px);
+}
+
+/* --- Top Banner --- */
+.top-banner{
+  height: var(--banner-h);
+  background: #ffffff;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+}
+
+.banner-inner{
+  width: 100%;
+  padding: 24px 28px;
+}
+
+.banner-title{
+  font-size: var(--title-size);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin: 0 0 10px 0;
+}
+
+.banner-subtitle{
+  font-size: var(--subtitle-size);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+/* --- Layout: Sidebar + Content --- */
+.page{
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: calc(100vh - var(--banner-h));
+}
+
+.sidebar{
+  border-right: 1px solid var(--rule);
+  background: #ffffff;
+}
+
+.sidebar-inner{
+  position: sticky;
+  top: 0;
+  padding: 18px 14px;
+  height: calc(100vh - 0px);
+  overflow-y: auto;
+}
+
+.nav-group{
+  margin-bottom: 18px;
+}
+
+.nav-heading{
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 14px 8px 8px 8px;
+  color: var(--muted);
+}
+
+.nav-link{
+  display: block;
+  padding: 8px 10px;
+  margin: 2px 4px;
+  border-radius: 6px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.nav-link:hover{
+  background: #f3f3f3;
+}
+
+.sidebar-footer{
+  margin-top: 20px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--rule);
+}
+
+/* --- Main Content --- */
+.content{
+  padding: 28px 28px 56px 28px;
+}
+
+.section{
+  max-width: 980px;
+  margin: 0 0 34px 0;
+}
+
+.section h1{
+  font-size: 36px;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.01em;
+}
+
+.section h2{
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.01em;
+}
+
+.section p{
+  font-size: 18px;
+  line-height: 1.55;
+  margin: 0 0 12px 0;
+  color: #111;
+}
+
+.section a{
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.rule{
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 34px 0;
+}
+
+.footer{
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.tiny{
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* --- Responsive --- */
+@media (max-width: 980px){
+  :root{
+    --sidebar-w: 240px;
+    --banner-h: 220px;
+    --title-size: 74px;
+    --subtitle-size: 42px;
+  }
+  .content{ padding: 22px 18px 48px 18px; }
+}
+
+@media (max-width: 740px){
+  :root{
+    --banner-h: 180px;
+    --title-size: 54px;
+    --subtitle-size: 28px;
+  }
+
+  .page{
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar{
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sidebar-inner{
+    position: relative;
+    height: auto;
+    overflow: visible;
+    padding: 10px 10px;
+  }
+}
