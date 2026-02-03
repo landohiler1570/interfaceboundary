@@ -549,21 +549,165 @@ pre code {
   .hero h1 { font-size: 42px; }
   .dl-grid { grid-template-columns: 1fr; }
 }
+
+/* ─── TOP BANNER ─── */
+:root { --banner-h: 48px; }
+.top-banner{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--banner-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 0 16px;
+  background:#2a1e1a;
+  color:#e0b0a0;
+  font-family: var(--mono);
+  font-size:11px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  border-bottom:1px solid #3a2a24;
+  z-index: 250;
+}
+.top-banner .dot{ opacity: 0.8; }
+
+/* Prevent the fixed sidebar from cutting into banner text on desktop */
+@media (min-width: 901px){
+  .top-banner{ padding-left: calc(220px + 16px); }
+}
+
+/* Shift fixed sidebar below the banner */
+.sidebar{
+  top: var(--banner-h);
+  height: calc(100vh - var(--banner-h));
+  padding-top: 36px;
+}
+
+/* Shift main content below the fixed banner */
+.main{
+  padding-top: calc(80px + var(--banner-h));
+}
+
+/* On mobile (sidebar hidden), restore normal banner padding */
+@media (max-width: 900px){
+  .top-banner{ padding-left: 16px; height: 52px; }
+  :root { --banner-h: 52px; }
+  .main{ padding-top: calc(48px + var(--banner-h)); }
+}
+
+/* ─── SHEET MODAL (CSS-only :target) ─── */
+.sheet-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  padding: 40px 16px;
+}
+.sheet-modal:target{ display:block; }
+
+.sheet-backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(2px);
+}
+
+.sheet{
+  position: relative;
+  margin: 0 auto;
+  max-width: 860px;
+  background: #101010;
+  border: 1px solid var(--rule-light);
+  border-radius: 10px;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 28px 28px 22px;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: sheetIn 220ms ease-out forwards;
+}
+@keyframes sheetIn { to { transform: translateY(0); opacity: 1; } }
+
+.sheet-header{
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom: 14px;
+}
+.sheet-title{
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+.sheet-meta{
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+.sheet-status{
+  display:inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-light);
+  color: var(--text);
+  background: rgba(255,255,255,0.03);
+}
+.sheet-status.verified{ border-color: rgba(90,138,106,0.5); color: var(--pass); }
+.sheet-status.draft{ border-color: rgba(181,149,106,0.55); color: var(--accent-warm); }
+.sheet-status.wip{ border-color: rgba(160,96,80,0.55); color: var(--fail); }
+
+.sheet-body{ font-size: 15px; color: var(--text); margin: 14px 0 18px; }
+.sheet-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+
+.sheet-btn{
+  display:inline-block;
+  text-decoration:none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--rule-light);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-bright);
+}
+.sheet-btn:hover{ border-color: var(--accent-dim); color: var(--accent); }
+
+.sheet-close{
+  text-decoration:none;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 6px 8px;
+  border: 1px solid var(--rule-light);
+  border-radius: 7px;
+  background: rgba(255,255,255,0.02);
+}
+.sheet-close:hover{ color: var(--text-bright); border-color: var(--accent-dim); }
+
+/* Make download cards feel clickable */
+.dl-card{ cursor: pointer; }
+
 </style>
 </head>
 <body>
 
-<div style="
-  background:#2a1e1a;
-  color:#e0b0a0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size:11px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  padding:10px 16px;
-  border-bottom:1px solid #3a2a24;
-">
-  Internal draft · content under verification · do not cite without confirmation
+<div class="top-banner">
+  <span>Internal draft</span>
+  <span class="dot">·</span>
+  <span>content under verification</span>
+  <span class="dot">·</span>
+  <span>do not cite without confirmation</span>
 </div>
 
 <!-- ─── SIDEBAR ─── -->
@@ -595,7 +739,7 @@ pre code {
       <a href="#fso">Feedback-stabilized observer</a>
     </div>
     <div class="nav-group">
-      <div class="nav-label">Downloads</div>
+      <div class="nav-label">Technical notes</div>
       <a href="#downloads">Technical notes</a>
       <a href="#code">Code</a>
       <a href="#hashes">Hashes</a>
@@ -1112,8 +1256,8 @@ pre code {
 
   <div class="section-divider"></div>
 
-  <!-- ═══ DOWNLOADS ═══ -->
-  <div class="group-label">Downloads</div>
+  <!-- ═══ TECHNICAL NOTES ═══ -->
+  <div class="group-label">Technical notes</div>
 
   <section class="section" id="downloads">
     <h3>Technical notes</h3>
@@ -1123,57 +1267,358 @@ pre code {
       whichever thread interests you.
     </p>
     <div class="dl-grid">
-      <div class="dl-card">
+      <a class="dl-card" href="#note-electron-identity-andamp-topology">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Electron identity &amp; topology</div>
         <div class="dl-desc">One-electron postulate under Kernel Law. Wheeler's hypothesis as gauge.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-physical-distinctions">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Physical distinctions</div>
         <div class="dl-desc">Comparative analysis: electron identity vs. arrow of time.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-neutron-composite-case">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Neutron (composite case)</div>
         <div class="dl-desc">EFT vs. QCD levels. Kernel growth with compositeness.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-neutrino-distinctions">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Neutrino distinctions</div>
         <div class="dl-desc">Flavor, mass paths, Majorana vs. Dirac. Interference as kernel signature.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-gravity-andamp-the-graviton">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Gravity &amp; the graviton</div>
         <div class="dl-desc">Kernel dominance in GR. Why graviton number is coordinate-dependent.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-cosmology">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Cosmology</div>
         <div class="dl-desc">FLRW particle number as Bogoliubov gauge. The universe as a correlation machine.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-black-holes">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Black holes</div>
         <div class="dl-desc">Information loss as kernel amplification. Page curve as access artifact.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-thermodynamics-andamp-demons">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Thermodynamics &amp; demons</div>
         <div class="dl-desc">Maxwell's demon, QEC, Landauer — all as algebra expansion/contraction cycles.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-consciousness">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Consciousness</div>
         <div class="dl-desc">Exploratory note: observer-algebra framing of subjective reports; unverified and non-final.</div>
-      </div>
-      <div class="dl-card">
+      </a>
+      <a class="dl-card" href="#note-systemic-breakdowns">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Systemic breakdowns</div>
         <div class="dl-desc">Exploratory note: speculative forecasts about model and observer failure modes; unverified.</div>
+      </a>
+    
+<div id="note-electron-identity-andamp-topology" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-andamp-topology-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-electron-identity-andamp-topology-title" class="sheet-title">Electron identity &amp; topology</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
       </div>
     </div>
+
+    <div class="sheet-body">
+      <p>One-electron postulate under Kernel Law. Wheeler's hypothesis as gauge.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-physical-distinctions" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-physical-distinctions-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-physical-distinctions-title" class="sheet-title">Physical distinctions</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Comparative analysis: electron identity vs. arrow of time.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-neutron-composite-case" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-neutron-composite-case-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-neutron-composite-case-title" class="sheet-title">Neutron (composite case)</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>EFT vs. QCD levels. Kernel growth with compositeness.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-neutrino-distinctions" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-neutrino-distinctions-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-neutrino-distinctions-title" class="sheet-title">Neutrino distinctions</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Flavor, mass paths, Majorana vs. Dirac. Interference as kernel signature.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-gravity-andamp-the-graviton" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-gravity-andamp-the-graviton-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-gravity-andamp-the-graviton-title" class="sheet-title">Gravity &amp; the graviton</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Kernel dominance in GR. Why graviton number is coordinate-dependent.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-cosmology" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-cosmology-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-cosmology-title" class="sheet-title">Cosmology</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>FLRW particle number as Bogoliubov gauge. The universe as a correlation machine.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/cosmology.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/cosmology.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/cosmology.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-black-holes" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-black-holes-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-black-holes-title" class="sheet-title">Black holes</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Information loss as kernel amplification. Page curve as access artifact.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/black-holes.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/black-holes.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/black-holes.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-thermodynamics-andamp-demons" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-thermodynamics-andamp-demons-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-thermodynamics-andamp-demons-title" class="sheet-title">Thermodynamics &amp; demons</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Maxwell's demon, QEC, Landauer — all as algebra expansion/contraction cycles.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-consciousness" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-consciousness-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-consciousness-title" class="sheet-title">Consciousness</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Exploratory note: observer-algebra framing of subjective reports; unverified and non-final.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/consciousness.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/consciousness.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/consciousness.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+<div id="note-systemic-breakdowns" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-systemic-breakdowns-title">
+    <div class="sheet-header">
+      <div>
+        <div id="note-systemic-breakdowns-title" class="sheet-title">Systemic breakdowns</div>
+        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body">
+      <p>Exploratory note: speculative forecasts about model and observer failure modes; unverified.</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
+        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
+        and keep the filename stable.
+      </p>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.pdf" target="_blank" rel="noopener">Open</a>
+    </div>
+  </div>
+</div>
+
+</div>
   </section>
 
   <!-- CODE -->
