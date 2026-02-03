@@ -553,6 +553,19 @@ pre code {
 </head>
 <body>
 
+<div style="
+  background:#2a1e1a;
+  color:#e0b0a0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:10px 16px;
+  border-bottom:1px solid #3a2a24;
+">
+  Internal draft · content under verification · do not cite without confirmation
+</div>
+
 <!-- ─── SIDEBAR ─── -->
 <aside class="sidebar">
   <div class="sidebar-logo">
@@ -607,7 +620,7 @@ pre code {
     <h1>Kernel Law</h1>
     <h2>Observer limits and identifiability</h2>
     <div class="hero-meta">
-      <div class="hero-meta-item">Status <span>v0.3 — active</span></div>
+      <div class="hero-meta-item">Status <span>v0.3 — internal draft</span></div>
       <div class="hero-meta-item">Last updated <span>2026-02-01</span></div>
       <div class="hero-meta-item">Domain <span>theoretical physics</span></div>
     </div>
@@ -670,10 +683,10 @@ pre code {
     <div class="theorem-block">
       <div class="def-label">Kernel Dynamics Theorem</div>
       <p>
-        All physically observable irreversible phenomena — including the arrow of
-        time, wavefunction collapse, and black-hole information loss — arise
-        solely from the time-dependence of &#x1D4O;(t) relative to the spreading
-        support of the unitary history.
+        Within this framework, physically observable irreversibility is attributed to the
+        time-dependence (or limitation) of the accessible algebra &#x1D4O;(t) relative to the
+        evolving support of the unitary history. The unitary history is not modified; the
+        classification changes as observer access changes.
       </p>
       <p>
         <strong>Physical phase space</strong> is the quotient manifold
@@ -799,8 +812,9 @@ pre code {
   <section class="section" id="indist">
     <h3>Indistinguishability</h3>
     <p>
-      Scope and Contribution.
-      Many foundational questions in physics arise from disagreements over which distinctions        are physically meaningful: what constitutes a particle, whether time has a preferred           direction, what information is lost at horizons, and which degrees of freedom survive          coarse observation. These questions are often treated as separate problems, addressed          with domain-specific tools and assumptions.
+      The kernel-bounded negative result: there exist pairs of substrates that
+      produce <em>identical</em> measurement records for any observer algebra of
+      the specified type.
     </p>
     <p>
       <strong>What it says.</strong> No Markov-1, fixed-stride, adaptive-<em>k</em>
@@ -967,13 +981,11 @@ pre code {
       in real time.
     </p>
     <p>
-      The key prediction: on a <strong>strongly mixing</strong> substrate
-      (positive Lyapunov exponent), feedback drives <code>k</code> to a stable
-      interior value — entropy rate matches the target. On an
-      <strong>integrable</strong> substrate (zero Lyapunov exponent), <code>k</code>
-      rails to a boundary or oscillates — no stable interior equilibrium exists.
-      The substrate class is therefore <em>identified</em> by the dynamical
-      signature of the observer's own state variable.
+      Working hypothesis (under verification): on substrates with strong mixing, feedback may
+      drive <code>k</code> toward a stable interior value where the estimated entropy rate matches the target.
+      On integrable substrates, <code>k</code> may rail to a boundary or oscillate.
+      If confirmed, substrate class would be inferred from the dynamical signature of the observer’s own state variable.
+      Until then, treat this section as experimental scaffolding, not a finalized result.
     </p>
 
     <h4>Live experiment results</h4>
@@ -983,13 +995,11 @@ pre code {
     </p>
 
     <div class="note note-finding">
-      <div class="note-label">Active finding</div>
+      <div class="note-label">Unverified finding</div>
       <p style="margin-bottom:0;">
-        All Mixing trials currently return UNSTABLE. The controller is not
-        converging to a stable interior fixed point at any tested target or
-        memory size. This is either a tuning issue (η, stride, warmup) or
-        evidence that the Markov-1 estimator underresolves the doubling map at
-        these alphabet sizes. Under active investigation.
+        Preliminary run result: in the current implementation (seed = 0, 2026-02-02), all Mixing trials return UNSTABLE.
+        This may reflect controller tuning (η, stride, warmup), estimator mismatch at these alphabet sizes, or a genuine limitation
+        of the Markov-1 + flush-on-k-jump design for this substrate. Do not cite as a conclusion; it is an active debugging target.
       </p>
     </div>
 
@@ -1156,12 +1166,12 @@ pre code {
       <div class="dl-card">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Consciousness</div>
-        <div class="dl-desc">Hard problem resolved. Qualia as equivalence classes. Algebraic closure.</div>
+        <div class="dl-desc">Exploratory note: observer-algebra framing of subjective reports; unverified and non-final.</div>
       </div>
       <div class="dl-card">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Systemic breakdowns</div>
-        <div class="dl-desc">Forecasts: complexity horizon, model collapse, cognitive fragmentation.</div>
+        <div class="dl-desc">Exploratory note: speculative forecasts about model and observer failure modes; unverified.</div>
       </div>
     </div>
   </section>
@@ -1230,27 +1240,32 @@ sha256  <span class="string">pending</span>   Kernel_Notes.txt</code></pre>
   <div class="group-label">Meta</div>
 
   <section class="section" id="scope">
-    <h3>Scope &amp; non-claims</h3>
+    <h3>Scope &amp; contribution</h3>
     <p>
-      Kernel Law does <strong>not</strong> claim to be a new fundamental theory
-      of nature. It does not modify the Standard Model, General Relativity, or
-      quantum mechanics. It does not propose new particles or new forces.
+      Many foundational disputes in physics reduce to a single structural question:
+      <em>which distinctions are physically resolvable for a specified observer?</em>
+      Kernel Law formalizes this by treating physical state space as the quotient of
+      history space by the observer kernel induced by an accessible observable algebra.
     </p>
     <p>
-      What it claims: a <em>classification scheme</em> for physical
-      distinctions, organised by observer access rather than by particle type or
-      interaction strength. The classifications are falsifiable — each one
-      identifies the specific algebra upgrade that would promote a gauge
-      distinction to physical, and each upgrade is either ruled in or ruled out
-      by known physics.
+      The framework introduces no new dynamical laws and makes no claims that require modifying
+      quantum mechanics, quantum field theory, or general relativity. Its contribution is
+      classificatory: it separates what is <em>observable</em>, what is <em>gauge</em> (observer-invisible),
+      and what becomes observable only after a concrete upgrade to the observer’s access model
+      (memory depth, sampling, or available operators).
     </p>
     <p>
-      The framework is most useful in regimes where the standard
-      particle-ontology language breaks down: cosmological horizons, black-hole
-      evaporation, confined phases, and any system where "what counts as a
-      particle" is itself observer-dependent.
+      This lens yields sharp, testable statements about which proposed distinctions can be operationally defined
+      within known physics, and it clarifies why certain questions recur across domains (measurement, irreversibility,
+      horizons, and particle notions): they are often boundary questions about access, not dynamics.
     </p>
-  </section>
+    <div class="note">
+      <div class="note-label">Non-claims</div>
+      <p style="margin-bottom:0;">
+        This site is a workbench. Any section marked “unverified” is experimental or exploratory and should not be treated as a settled claim.
+      </p>
+    </div>
+</section>
 
   <section class="section" id="citation">
     <h3>Citation</h3>
