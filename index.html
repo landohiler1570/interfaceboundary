@@ -698,6 +698,31 @@ pre code {
 /* Make download cards feel clickable */
 .dl-card{ cursor: pointer; }
 
+
+/* ─── SHEET: EMBEDDED NOTE VIEWER ───────────────────────────── */
+.sheet-viewer {
+  margin-top: 14px;
+  border: 1px solid var(--rule-light);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0f0f0f;
+}
+.sheet-viewer iframe {
+  width: 100%;
+  height: 65vh;
+  border: 0;
+  display: block;
+  background: #0f0f0f;
+}
+.sheet-viewer .viewer-fallback {
+  padding: 18px 18px;
+  color: var(--text);
+  font-size: 14px;
+}
+.sheet-viewer .viewer-fallback code {
+  font-size: 12px;
+}
+
 </style>
 </head>
 <body>
@@ -1726,6 +1751,53 @@ sha256  <span class="string">pending</span>   Kernel_Notes.txt</code></pre>
   </section>
 
   <!-- FOOTER -->
+  
+<div id="note-electron-identity" class="sheet-modal">
+  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-title">
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title" id="note-electron-identity-title">Electron identity &amp; topology</div>
+        <div class="sheet-meta">Technical note · full text viewer</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="sheet-status draft">Draft</span><br>
+        <a class="sheet-close" href="#downloads">Close</a>
+      </div>
+    </div>
+
+    <div class="sheet-body" style="margin-bottom:0;">
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 10px;">
+        This viewer loads the full note from <code>/downloads/notes/electron-identity-topology.html</code>. If the file is not yet present,
+        you’ll see the fallback instructions below.
+      </p>
+
+      <div class="sheet-viewer">
+        <iframe src="/downloads/notes/electron-identity-topology.html" title="Electron identity &amp; topology — full note" loading="lazy"></iframe>
+        <div class="viewer-fallback">
+          <div style="font-family: var(--mono); font-size: 10px; letter-spacing:0.12em; text-transform:uppercase; color: var(--accent-dim); margin-bottom: 10px;">
+            File not found? Drop-in path
+          </div>
+          <p style="margin-bottom:10px;">
+            Add the rendered note file at:
+            <code>downloads/notes/electron-identity-topology.html</code>
+          </p>
+          <p style="margin-bottom:0; color: var(--text-dim);">
+            Tip: keep filenames stable; the pop-out will display whatever is at that path.
+          </p>
+        </div>
+      </div>
+
+      <div class="sheet-actions" style="margin-top: 14px;">
+        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.pdf">Download PDF</a>
+        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.md">Download MD</a>
+        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.html" target="_blank" rel="noopener">Open</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <footer class="page-footer">
     <p>interfaceboundary.org · Kernel Law v0.3 · © 2026</p>
   </footer>
