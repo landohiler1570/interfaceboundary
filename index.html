@@ -1,1834 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kernel Law — Observer Limits and Identifiability</title>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ─── RESET + ROOT ─── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>interfaceboundary.org</title>
 
-:root {
-  --bg:          #0a0a0a;
-  --bg-panel:    #111111;
-  --bg-card:     #141414;
-  --rule:        #222222;
-  --rule-light:  #2a2a2a;
-  --text:        #c8c4bf;
-  --text-dim:    #5a564f;
-  --text-bright: #e8e4df;
-  --accent:      #7a9eb5;
-  --accent-dim:  #4a6e85;
-  --accent-warm: #b5956a;
-  --pass:        #5a8a6a;
-  --fail:        #a06050;
-  --mono:        'JetBrains Mono', monospace;
-  --serif:       'EB Garamond', Georgia, serif;
-  --display:     'Cormorant Garamond', Georgia, serif;
-}
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --panel:#111214;
+      --text:#e6e6e6;
+      --muted:#9a9a9a;
+      --accent:#8fb9ff;
+      --border:#1f1f22;
+    }
 
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 1.7;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+    *{ box-sizing:border-box; }
 
-/* ─── LAYOUT SHELL ─── */
-.layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  min-height: 100vh;
-}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "Georgia", "Times New Roman", serif;
+      line-height:1.5;
+    }
 
-/* ─── SIDEBAR ─── */
-.sidebar {
-  position: fixed;
-  top: 0; left: 0;
-  width: 220px;
-  height: 100vh;
-  background: var(--bg-panel);
-  border-right: 1px solid var(--rule);
-  overflow-y: auto;
-  z-index: 100;
-  padding: 48px 0 40px;
-}
-.sidebar-logo {
-  padding: 0 28px;
-  margin-bottom: 48px;
-}
-.sidebar-logo .logo-word {
-  display: block;
-  font-family: var(--display);
-  font-weight: 300;
-  font-size: 28px;
-  letter-spacing: 0.02em;
-  color: var(--text-bright);
-  line-height: 1.1;
-}
-.sidebar-logo .logo-sub {
-  display: block;
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 300;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 6px;
-}
+    /* =========================
+       TOP BANNER
+       ========================= */
+    .top-banner{
+      position:fixed;
+      top:0;
+      height:44px;
+      display:flex;
+      align-items:center;
+      padding:0 16px;
+      background:linear-gradient(to right, rgba(20,20,24,.95), rgba(12,12,14,.95));
+      border-bottom:1px solid var(--border);
+      z-index:900;
+      white-space:nowrap;
+      overflow:hidden;
+    }
 
-.nav-group { margin-bottom: 28px; }
-.nav-label {
-  font-family: var(--mono);
-  font-size: 8.5px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 0 28px;
-  margin-bottom: 8px;
-}
-.nav-group a {
-  display: block;
-  padding: 5px 28px;
-  font-family: var(--serif);
-  font-size: 14px;
-  color: var(--text);
-  text-decoration: none;
-  border-left: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.nav-group a:hover { color: var(--text-bright); background: rgba(255,255,255,0.03); }
-.nav-group a.active {
-  border-left-color: var(--accent);
-  color: var(--accent);
-  background: rgba(122,158,181,0.06);
-}
+    .top-banner span{
+      font-size:13px;
+      letter-spacing:0.15em;
+      color:var(--muted);
+    }
 
-.sidebar-footer {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 20px 28px;
-  border-top: 1px solid var(--rule);
-}
-.sidebar-footer a {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  text-decoration: none;
-  letter-spacing: 0.1em;
-}
-.sidebar-footer a:hover { color: var(--accent); }
+    /* Desktop: banner starts AFTER sidebar */
+    @media (min-width: 901px){
+      .top-banner{
+        left:220px;
+        right:0;
+        padding-left:16px;
+      }
+    }
 
-/* ─── MAIN ─── */
-.main {
-  grid-column: 2;
-  margin-left: 220px;
-  max-width: 780px;
-  padding: 80px 48px 160px;
-}
+    /* Mobile: full width */
+    @media (max-width: 900px){
+      .top-banner{
+        left:0;
+        right:0;
+      }
+    }
 
-/* ─── HERO ─── */
-.hero {
-  margin-bottom: 100px;
-  padding-bottom: 64px;
-  border-bottom: 1px solid var(--rule);
-}
-.hero h1 {
-  font-family: var(--display);
-  font-weight: 300;
-  font-size: 62px;
-  line-height: 1.05;
-  color: var(--text-bright);
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
-.hero h2 {
-  font-family: var(--display);
-  font-weight: 300;
-  font-size: 30px;
-  color: var(--text-dim);
-  font-style: italic;
-  letter-spacing: -0.01em;
-}
-.hero-meta {
-  margin-top: 36px;
-  display: flex;
-  gap: 40px;
-}
-.hero-meta-item { font-size: 13px; color: var(--text-dim); }
-.hero-meta-item span { color: var(--accent); font-family: var(--mono); font-size: 11px; }
+    /* =========================
+       SIDEBAR NAV
+       ========================= */
+    .sidebar{
+      position:fixed;
+      top:44px; /* below banner */
+      left:0;
+      width:220px;
+      bottom:0;
+      padding:24px 18px;
+      background:var(--panel);
+      border-right:1px solid var(--border);
+      overflow-y:auto;
+      z-index:800;
+    }
 
-/* ─── SECTION ─── */
-.section {
-  margin-bottom: 72px;
-  padding-top: 8px;
-}
-.section-divider {
-  height: 1px;
-  background: var(--rule);
-  margin-bottom: 64px;
-}
-/* group label above a cluster of sections */
-.group-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent-dim);
-  margin-bottom: 40px;
-  margin-top: 8px;
-}
+    .sidebar h4{
+      margin:24px 0 10px;
+      font-size:11px;
+      letter-spacing:0.25em;
+      color:#7a7a7a;
+      font-weight:normal;
+    }
 
-h3 {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 32px;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
-  line-height: 1.2;
-}
-h4 {
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: 16px;
-  color: var(--text-bright);
-  margin: 28px 0 10px;
-  letter-spacing: 0.01em;
-}
+    .sidebar a{
+      display:block;
+      padding:8px 10px;
+      margin:2px 0;
+      color:var(--text);
+      text-decoration:none;
+      border-radius:4px;
+      font-size:20px;
+    }
 
-p { margin-bottom: 16px; color: var(--text); }
-p + p { margin-top: 4px; }
+    .sidebar a:hover{
+      background:#1a1b1f;
+    }
 
-/* ─── MATH / DEFINITION BLOCKS ─── */
-.def-block {
-  border-left: 2px solid var(--accent-dim);
-  background: rgba(122,158,181,0.04);
-  padding: 18px 24px;
-  margin: 24px 0;
-  border-radius: 0 4px 4px 0;
-}
-.def-block .def-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 8px;
-}
-.def-block p { margin-bottom: 8px; font-size: 15.5px; }
-.def-block p:last-child { margin-bottom: 0; }
+    .sidebar a.active{
+      background:#141a24;
+      color:var(--accent);
+    }
 
-.theorem-block {
-  border-left: 2px solid var(--accent-warm);
-  background: rgba(181,149,106,0.05);
-  padding: 18px 24px;
-  margin: 24px 0;
-  border-radius: 0 4px 4px 0;
-}
-.theorem-block .def-label { color: var(--accent-warm); }
+    /* =========================
+       MAIN CONTENT
+       ========================= */
+    .content{
+      margin-left:220px;
+      padding:96px 64px 64px; /* top accounts for banner */
+      max-width:980px;
+    }
 
-/* ─── CODE / MATH INLINE ─── */
-code {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--accent);
-  background: rgba(122,158,181,0.08);
-  padding: 2px 7px;
-  border-radius: 3px;
-}
-pre {
-  background: #0e0e0e;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  padding: 20px 24px;
-  overflow-x: auto;
-  margin: 16px 0 24px;
-}
-pre code {
-  background: none;
-  padding: 0;
-  font-size: 12.5px;
-  color: var(--text);
-  line-height: 1.6;
-}
-.comment { color: var(--text-dim); }
-.keyword { color: var(--accent); }
-.string  { color: var(--accent-warm); }
-.func    { color: #8aadba; }
+    @media (max-width:900px){
+      .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        top:0;
+        border-right:none;
+      }
 
-/* ─── CLASSIFICATION TABLE ─── */
-.class-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13.5px;
-  margin: 20px 0 32px;
-  font-family: var(--serif);
-}
-.class-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--rule-light);
-  white-space: nowrap;
-}
-.class-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-  color: var(--text);
-}
-.class-table tr:last-child td { border-bottom: none; }
-.class-table .depth {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 500;
-}
-.class-table .entity { font-weight: 500; color: var(--text-bright); }
+      .content{
+        margin-left:0;
+        padding:96px 24px 48px;
+      }
+    }
 
-/* ─── RESULTS TABLE (live data) ─── */
-.results-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  margin: 16px 0 28px;
-  overflow-x: auto;
-  display: block;
-}
-.results-table th {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-align: left;
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--rule-light);
-  white-space: nowrap;
-}
-.results-table td {
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--rule);
-  color: var(--text);
-  white-space: nowrap;
-}
-.results-table tr:last-child td { border-bottom: none; }
-.results-table .pass { color: var(--pass); font-weight: 500; }
-.results-table .fail { color: var(--fail); font-weight: 500; }
-.results-table .state-stable { color: var(--pass); }
-.results-table .state-unstable { color: var(--fail); }
-.results-table .state-rail { color: var(--accent-warm); }
-.results-table .sub { color: var(--text-bright); font-weight: 500; }
-.results-table .sweep-group td:first-child { border-top: 1px solid var(--rule-light); }
+    section{ margin-bottom:96px; }
 
-/* batch header row */
-.results-table .batch-row td {
-  background: rgba(255,255,255,0.02);
-  color: var(--accent-dim);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 6px 10px;
-  border-bottom: 1px solid var(--rule-light);
-}
+    h1,h2,h3{
+      font-weight:normal;
+    }
 
-/* ─── KERNEL HIERARCHY VISUAL ─── */
-.hierarchy {
-  margin: 28px 0 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.h-level {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  align-items: stretch;
-  position: relative;
-}
-.h-level::before {
-  content: '';
-  position: absolute;
-  left: 40px;
-  top: 100%;
-  width: 1px;
-  height: 100%;
-  background: var(--rule-light);
-  z-index: 0;
-}
-.h-level:last-child::before { display: none; }
+    h1{ font-size:42px; }
+    h2{ font-size:30px; color:var(--accent); }
+    p{ font-size:18px; max-width:760px; }
 
-.h-dot {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 18px;
-  position: relative;
-  z-index: 1;
-}
-.h-dot-inner {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--accent-dim);
-  background: var(--bg);
-}
-.h-level:nth-child(1) .h-dot-inner { border-color: #5a8a6a; }
-.h-level:nth-child(2) .h-dot-inner { border-color: var(--accent); }
-.h-level:nth-child(3) .h-dot-inner { border-color: var(--accent-warm); }
-.h-level:nth-child(4) .h-dot-inner { border-color: #a06050; }
+    /* =========================
+       POPOUT NOTE
+       ========================= */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+    }
 
-.h-content {
-  padding: 12px 0 20px;
-  position: relative; z-index: 1;
-}
-.h-content .h-title {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-bright);
-  margin-bottom: 2px;
-}
-.h-content .h-sub {
-  font-size: 13.5px;
-  color: var(--text-dim);
-}
-.h-content .h-entities {
-  margin-top: 6px;
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.h-entity {
-  font-family: var(--mono);
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.04);
-  color: var(--text);
-  border: 1px solid var(--rule-light);
-}
+    .overlay:target{ display:flex; }
 
-/* ─── LADDER ─── */
-.ladder {
-  margin: 24px 0 32px;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.ladder-row {
-  display: grid;
-  grid-template-columns: 120px 1fr 200px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--rule);
-  align-items: start;
-}
-.ladder-row:last-child { border-bottom: none; }
-.ladder-row .lr-level {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 500;
-}
-.ladder-row .lr-desc { font-size: 14px; color: var(--text); }
-.ladder-row .lr-status {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-align: right;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-}
-.ladder-row .lr-status.physical { color: var(--pass); }
-.ladder-row .lr-status.gauge { color: var(--fail); }
-.ladder-row .lr-status.emergent { color: var(--accent-warm); }
+    .popout{
+      background:#0f1013;
+      border:1px solid var(--border);
+      width:90%;
+      height:90%;
+      display:flex;
+      flex-direction:column;
+    }
 
-/* ─── NOTE / WARNING ─── */
-.note {
-  background: rgba(122,158,181,0.06);
-  border: 1px solid rgba(122,158,181,0.15);
-  border-radius: 6px;
-  padding: 16px 20px;
-  margin: 20px 0;
-  font-size: 14px;
-}
-.note .note-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 4px;
-}
+    .popout-header{
+      padding:10px 14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
 
-.note-finding {
-  background: rgba(160,96,80,0.07);
-  border-color: rgba(160,96,80,0.2);
-}
-.note-finding .note-label { color: var(--fail); }
+    .popout-header span{
+      font-size:14px;
+      color:var(--muted);
+      letter-spacing:.15em;
+    }
 
-/* ─── DOWNLOADS ─── */
-.dl-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 20px 0;
-}
-.dl-card {
-  border: 1px solid var(--rule-light);
-  border-radius: 6px;
-  padding: 20px;
-  background: var(--bg-card);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.2s;
-  display: block;
-}
-.dl-card:hover { border-color: var(--accent-dim); }
-.dl-card .dl-icon {
-  font-family: var(--mono);
-  font-size: 20px;
-  color: var(--accent-dim);
-  margin-bottom: 10px;
-}
-.dl-card .dl-name {
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--text-bright);
-  margin-bottom: 4px;
-}
-.dl-card .dl-desc {
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
+    .popout-header a{
+      color:var(--accent);
+      text-decoration:none;
+      font-size:14px;
+    }
 
-/* ─── META ─── */
-.meta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin: 24px 0;
-}
-.meta-item h4 { margin-top: 0; }
-
-/* ─── FOOTER ─── */
-.page-footer {
-  margin-top: 120px;
-  padding-top: 40px;
-  border-top: 1px solid var(--rule);
-  font-size: 13px;
-  color: var(--text-dim);
-  font-family: var(--mono);
-}
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--rule-light); border-radius: 3px; }
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 48px 24px 120px; }
-  .hero h1 { font-size: 42px; }
-  .dl-grid { grid-template-columns: 1fr; }
-}
-
-/* ─── TOP BANNER ─── */
-:root { --banner-h: 48px; }
-.top-banner{
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--banner-h);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px 0 16px;
-  background:#2a1e1a;
-  color:#e0b0a0;
-  font-family: var(--mono);
-  font-size:11px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  border-bottom:1px solid #3a2a24;
-  z-index: 250;
-}
-.top-banner .dot{ opacity: 0.8; }
-
-/* Prevent the fixed sidebar from cutting into banner text on desktop */
-@media (min-width: 901px){
-  .top-banner{ padding-left: calc(220px + 16px); }
-}
-
-/* Shift fixed sidebar below the banner */
-.sidebar{
-  top: var(--banner-h);
-  height: calc(100vh - var(--banner-h));
-  padding-top: 36px;
-}
-
-/* Shift main content below the fixed banner */
-.main{
-  padding-top: calc(80px + var(--banner-h));
-}
-
-/* On mobile (sidebar hidden), restore normal banner padding */
-@media (max-width: 900px){
-  .top-banner{ padding-left: 16px; height: 52px; }
-  :root { --banner-h: 52px; }
-  .main{ padding-top: calc(48px + var(--banner-h)); }
-}
-
-/* ─── SHEET MODAL (CSS-only :target) ─── */
-.sheet-modal{
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: none;
-  padding: 40px 16px;
-}
-.sheet-modal:target{ display:block; }
-
-.sheet-backdrop{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(2px);
-}
-
-.sheet{
-  position: relative;
-  margin: 0 auto;
-  max-width: 860px;
-  background: #101010;
-  border: 1px solid var(--rule-light);
-  border-radius: 10px;
-  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
-  padding: 28px 28px 22px;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: sheetIn 220ms ease-out forwards;
-}
-@keyframes sheetIn { to { transform: translateY(0); opacity: 1; } }
-
-.sheet-header{
-  display:flex;
-  gap:16px;
-  align-items:flex-start;
-  justify-content:space-between;
-  margin-bottom: 14px;
-}
-.sheet-title{
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 400;
-  color: var(--text-bright);
-  line-height: 1.2;
-}
-.sheet-meta{
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 6px;
-}
-.sheet-status{
-  display:inline-block;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--rule-light);
-  color: var(--text);
-  background: rgba(255,255,255,0.03);
-}
-.sheet-status.verified{ border-color: rgba(90,138,106,0.5); color: var(--pass); }
-.sheet-status.draft{ border-color: rgba(181,149,106,0.55); color: var(--accent-warm); }
-.sheet-status.wip{ border-color: rgba(160,96,80,0.55); color: var(--fail); }
-
-.sheet-body{ font-size: 15px; color: var(--text); margin: 14px 0 18px; }
-.sheet-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
-
-.sheet-btn{
-  display:inline-block;
-  text-decoration:none;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  padding: 10px 12px;
-  border-radius: 7px;
-  border: 1px solid var(--rule-light);
-  background: rgba(255,255,255,0.03);
-  color: var(--text-bright);
-}
-.sheet-btn:hover{ border-color: var(--accent-dim); color: var(--accent); }
-
-.sheet-close{
-  text-decoration:none;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  padding: 6px 8px;
-  border: 1px solid var(--rule-light);
-  border-radius: 7px;
-  background: rgba(255,255,255,0.02);
-}
-.sheet-close:hover{ color: var(--text-bright); border-color: var(--accent-dim); }
-
-/* Make download cards feel clickable */
-.dl-card{ cursor: pointer; }
-
-
-/* ─── SHEET: EMBEDDED NOTE VIEWER ───────────────────────────── */
-.sheet-viewer {
-  margin-top: 14px;
-  border: 1px solid var(--rule-light);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #0f0f0f;
-}
-.sheet-viewer iframe {
-  width: 100%;
-  height: 65vh;
-  border: 0;
-  display: block;
-  background: #0f0f0f;
-}
-.sheet-viewer .viewer-fallback {
-  padding: 18px 18px;
-  color: var(--text);
-  font-size: 14px;
-}
-.sheet-viewer .viewer-fallback code {
-  font-size: 12px;
-}
-
-</style>
+    .popout iframe{
+      flex:1;
+      border:none;
+      background:#fff;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="top-banner">
-  <span>Internal draft</span>
-  <span class="dot">·</span>
-  <span>content under verification</span>
-  <span class="dot">·</span>
-  <span>do not cite without confirmation</span>
-</div>
-
-<!-- ─── SIDEBAR ─── -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <span class="logo-word">Kernel Law</span>
-    <span class="logo-sub">interfaceboundary.org</span>
+  <!-- TOP BANNER -->
+  <div class="top-banner">
+    <span>INTERFACEBOUNDARY.ORG — UNDER VERIFICATION</span>
   </div>
 
-  <nav>
-    <div class="nav-group">
-      <div class="nav-label">Kernel Law</div>
-      <a href="#overview" class="active">Overview</a>
-      <a href="#formal">Formal statement</a>
-      <a href="#fibers">History fibers</a>
-      <a href="#residue">Residue &amp; freeze-out</a>
-      <a href="#markov">Markovian limit</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Observer Boundary</div>
-      <a href="#observer-kernel">Observer kernel</a>
-      <a href="#indist">Indistinguishability</a>
-      <a href="#ladder">Observer-access ladder</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Results</div>
-      <a href="#negative">Negative theorem</a>
-      <a href="#crossing">Boundary crossing</a>
-      <a href="#fso">Feedback-stabilized observer</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Technical notes</div>
-      <a href="#downloads">Technical notes</a>
-      <a href="#code">Code</a>
-      <a href="#hashes">Hashes</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">Meta</div>
-      <a href="#scope">Scope &amp; non-claims</a>
-      <a href="#citation">Citation</a>
-    </div>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <h4>RESULTS</h4>
+    <a href="#neg">Negative theorem</a>
+    <a href="#boundary" class="active">Boundary crossing</a>
+    <a href="#observer">Feedback‑stabilized observer</a>
+
+    <h4>TECHNICAL NOTES</h4>
+    <a href="#note1">Technical notes</a>
+    <a href="#code">Code</a>
+    <a href="#hashes">Hashes</a>
+
+    <h4>META</h4>
+    <a href="#scope">Scope & non‑claims</a>
+    <a href="#citation">Citation</a>
   </nav>
 
-  <div class="sidebar-footer">
-    <a href="#">interfaceboundary.org</a>
-  </div>
-</aside>
+  <!-- MAIN CONTENT -->
+  <main class="content">
 
-<!-- ─── MAIN ─── -->
-<main class="main">
-
-  <!-- HERO -->
-  <header class="hero" id="top">
-    <h1>Kernel Law</h1>
-    <h2>Observer limits and identifiability</h2>
-    <div class="hero-meta">
-      <div class="hero-meta-item">Status <span>v0.3 — internal draft</span></div>
-      <div class="hero-meta-item">Last updated <span>2026-02-01</span></div>
-      <div class="hero-meta-item">Domain <span>theoretical physics</span></div>
-    </div>
-  </header>
-
-  <!-- ═══ KERNEL LAW ═══ -->
-  <div class="group-label">Kernel Law</div>
-
-  <!-- OVERVIEW -->
-  <section class="section" id="overview">
-    <h3>Overview</h3>
-    <p>
-      Kernel Law is a framework for classifying physical distinctions by their
-      <em>identifiability</em> relative to a given observer. Every distinction in a
-      history space &#x1D4X; either survives the projection onto the observer's
-      accessible algebra &#x1D4O; — making it <em>physical</em> — or it does not,
-      placing it in the <em>kernel</em> &#x1D4Kₒ; and rendering it gauge.
-    </p>
-    <p>
-      The framework does not add new dynamical laws. It reorganises existing
-      physics around a single structural question: <em>what can this observer
-      distinguish?</em> Particle identity, the arrow of time, black-hole
-      information, and cosmological particle number all resolve into clean
-      verdicts once the observer's algebra is specified.
-    </p>
-
-    <div class="def-block">
-      <div class="def-label">Core principle</div>
+    <section id="boundary">
+      <h1>Boundary crossing</h1>
       <p>
-        A distinction Δ is <strong>physical</strong> for observer O if and only if
-        there exists an operator Ô ∈ &#x1D4O; that resolves it. Otherwise Δ is
-        <strong>gauge</strong> — a coordinate choice on the history fiber, invisible
-        to measurement.
+        This page documents observer‑level boundary crossings under kernel access constraints.
+        All claims are stated at the level of distinguishability, not ontology.
       </p>
-    </div>
-  </section>
 
-  <!-- FORMAL STATEMENT -->
-  <section class="section" id="formal">
-    <h3>Formal statement</h3>
-    <p>
-      Let &#x1D4X; be the history-augmented configuration space of a closed
-      physical system evolving unitarily, and let &#x1D4O; ⊂ 𝓑(&#x1D4X;) be the
-      observer's subalgebra of bounded operators (local, coarse, possibly
-      time-dependent).
-    </p>
-
-    <div class="def-block">
-      <div class="def-label">Kernel equivalence</div>
       <p>
-        Two histories <em>x, x′ ∈ &#x1D4X;</em> are kernel-equivalent
-        (<em>x ~_O x′</em>) if and only if they produce identical statistics
-        for every accessible observable:
+        <a href="#note-popout">Open technical note →</a>
       </p>
-      <p style="font-family: var(--mono); font-size: 13px; color: var(--accent); padding: 4px 0;">
-        ⟨x | Ô | x⟩ = ⟨x′ | Ô | x′⟩  &nbsp; ∀ Ô ∈ &#x1D4O;
-      </p>
-    </div>
+    </section>
 
-    <div class="theorem-block">
-      <div class="def-label">Kernel Dynamics Theorem</div>
-      <p>
-        Within this framework, physically observable irreversibility is attributed to the
-        time-dependence (or limitation) of the accessible algebra &#x1D4O;(t) relative to the
-        evolving support of the unitary history. The unitary history is not modified; the
-        classification changes as observer access changes.
-      </p>
-      <p>
-        <strong>Physical phase space</strong> is the quotient manifold
-        &#x1D4X;_phys = &#x1D4X; / &#x1D4K;_O.
-      </p>
-    </div>
-  </section>
+  </main>
 
-  <!-- HISTORY FIBERS -->
-  <section class="section" id="fibers">
-    <h3>History fibers</h3>
-    <p>
-      The <em>history fiber</em> over a physical state is the full pre-image of
-      that state under the quotient map π : &#x1D4X; → &#x1D4X;_phys. Every physical
-      observable lives in the base (the quotient); every gauge degree of freedom
-      lives in the fiber.
-    </p>
-    <p>
-      A state-only kernel — one that ignores the temporal ordering of events —
-      is <em>domain-wrong</em> for any system whose distinguishability depends on
-      correlations across time. The correct object is always the
-      <em>history-augmented</em> space, which carries the full causal structure.
-    </p>
-    <p>
-      Concretely: a single snapshot of a dynamical system (position without
-      momentum) cannot resolve velocity. The fiber is not a deficiency of the
-      theory; it is an accurate map of what the algebra sees.
-    </p>
-
-    <div class="note">
-      <div class="note-label">Zeno's arrow</div>
-      <p style="margin-bottom:0;">
-        Zeno's paradox is a textbook fiber error. Restricting the algebra to a
-        single time-slice (Markov-0) forces momentum into the kernel. Motion is
-        a correlation between times — sever the correlation, and the arrow stops.
-      </p>
-    </div>
-  </section>
-
-  <!-- RESIDUE & FREEZE-OUT -->
-  <section class="section" id="residue">
-    <h3>Residue &amp; freeze-out</h3>
-    <p>
-      <em>Residue</em> is the image of the history space under the forward map
-      F : &#x1D4X; → O that survives the quotient. It is the set of distinctions
-      that remain measurable after all gauge redundancies are quotiented out.
-    </p>
-    <p>
-      <em>Freeze-out</em> occurs when modes cross a causal horizon and decouple
-      from the accessible algebra. In cosmology, super-horizon perturbations
-      stop oscillating and become effectively classical: their quantum nature
-      retreats into the kernel. The residue (power spectrum, correlation
-      functions) is locked in; the underlying micro-history is frozen out.
-    </p>
-
-    <div class="def-block">
-      <div class="def-label">Operational meaning</div>
-      <p>
-        The residue R is stable — repeated measurements converge on it.
-        The frozen-out fiber is not destroyed; it is simply no longer reachable
-        by the observer's current algebra. Upgrading the algebra (expanding O)
-        can, in principle, thaw it.
-      </p>
-    </div>
-  </section>
-
-  <!-- MARKOVIAN LIMIT -->
-  <section class="section" id="markov">
-    <h3>Markovian limit</h3>
-    <p>
-      The standard state-space model (Markov-0: the future depends only on the
-      present) is valid precisely when all relevant history has already been
-      projected into the current state. Formally, this is the recovery condition:
-    </p>
-    <p>
-      The Markov property holds for observer O at time <em>t</em> if and only if
-      the conditional distribution of future observables, given the present
-      state, is independent of the past. In kernel language: the transition
-      kernel of the past lies entirely in &#x1D4K;_O once the current state is
-      conditioned on.
-    </p>
-    <p>
-      When this fails — when the past carries information the present state does
-      not — the system requires a <em>history-augmented</em> observer (Markov-1
-      or higher) to maintain accurate entropy estimation. This is precisely the
-      regime probed by the feedback-stabilized observer experiments below.
-    </p>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ═══ OBSERVER BOUNDARY ═══ -->
-  <div class="group-label">Observer Boundary</div>
-
-  <!-- OBSERVER KERNEL -->
-  <section class="section" id="observer-kernel">
-    <h3>Observer kernel</h3>
-    <p>
-      The observer kernel is defined by three assumptions that together fix the
-      measurement model:
-    </p>
-    <p>
-      <strong>Markov-1 transitions.</strong> The observer tracks pairs
-      <code>(s_{t−1}, s_t)</code> of consecutive quantised symbols, not bare
-      states. This is the minimal history depth that captures serial
-      correlations.
-    </p>
-    <p>
-      <strong>Fixed stride.</strong> Measurement events are spaced at a constant
-      interval (stride = 25 steps in the reference implementation). Between
-      measurements the system evolves freely; the observer does not see
-      intermediate states.
-    </p>
-    <p>
-      <strong>Adaptive alphabet size k.</strong> The quantisation resolution
-      <code>k</code> is not fixed externally but is adjusted by a feedback
-      controller to match a target entropy rate. <code>k</code> is therefore an
-      endogenous variable of the observer, not a parameter of the substrate.
-    </p>
-  </section>
-
-  <!-- INDISTINGUISHABILITY -->
-  <section class="section" id="indist">
-    <h3>Indistinguishability</h3>
-    <p>
-      The kernel-bounded negative result: there exist pairs of substrates that
-      produce <em>identical</em> measurement records for any observer algebra of
-      the specified type.
-    </p>
-    <p>
-      <strong>What it says.</strong> No Markov-1, fixed-stride, adaptive-<em>k</em>
-      observer can distinguish an integrable substrate from a strongly-mixing one
-      when both are viewed at the same coarse resolution and the same target
-      entropy rate, provided the target is achievable by both.
-    </p>
-    <p>
-      <strong>What it does not say.</strong> It does not claim the substrates are
-      physically identical. It claims they are identical <em>relative to this
-      observer class</em>. Upgrading the observer — increasing memory depth,
-      lowering stride, or adding higher-order statistics — can break the
-      degeneracy. The distinction is in the kernel; it is not ontologically void.
-    </p>
-  </section>
-
-  <!-- OBSERVER-ACCESS LADDER -->
-  <section class="section" id="ladder">
-    <h3>Observer-access ladder</h3>
-    <p>
-      Distinctions move between gauge and physical as the observer's algebra is
-      upgraded. The ladder below maps the access levels encountered across the
-      full corpus of analyses.
-    </p>
-
-    <div class="ladder">
-      <div class="ladder-row">
-        <div class="lr-level">Level 0</div>
-        <div class="lr-desc"><strong>Instantaneous snapshot.</strong> Single time-slice. No memory. Velocity, time-direction, and all serial correlations are gauge.</div>
-        <div class="lr-status gauge">Markov-0</div>
+  <!-- POPOUT -->
+  <div id="note-popout" class="overlay">
+    <div class="popout">
+      <div class="popout-header">
+        <span>TECHNICAL NOTE</span>
+        <a href="#">Close</a>
       </div>
-      <div class="ladder-row">
-        <div class="lr-level">Level 1</div>
-        <div class="lr-desc"><strong>Local correlations.</strong> Finite memory window. Transition statistics are physical. Global topology and connectivity remain gauge.</div>
-        <div class="lr-status gauge">Local access</div>
-      </div>
-      <div class="ladder-row">
-        <div class="lr-level">Level 2</div>
-        <div class="lr-desc"><strong>Feedback-stabilised.</strong> Memory + predictive action on the substrate. The arrow of time becomes an emergent observable via stability.</div>
-        <div class="lr-status emergent">FSO</div>
-      </div>
-      <div class="ladder-row">
-        <div class="lr-level">Level 3</div>
-        <div class="lr-desc"><strong>Global integration.</strong> Access to asymptotic correlations across the full history. Connectivity and topological invariants become physical.</div>
-        <div class="lr-status physical">Super-access</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ═══ RESULTS ═══ -->
-  <div class="group-label">Results</div>
-
-  <!-- NEGATIVE THEOREM -->
-  <section class="section" id="negative">
-    <h3>Negative theorem</h3>
-    <p>
-      Several distinctions that feel physically fundamental are formally
-      unreachable by standard observer algebras. The negative theorem collects
-      these results.
-    </p>
-
-    <table class="class-table">
-      <thead>
-        <tr>
-          <th>Distinction</th>
-          <th>Gauge group</th>
-          <th>Status</th>
-          <th>Why the upgrade fails</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="entity">Electron identity</td>
-          <td><em>S<sub>N</sub></em> (permutations)</td>
-          <td class="depth">Strict gauge</td>
-          <td>Connectivity sensor requires non-local evaluation — violates cluster decomposition.</td>
-        </tr>
-        <tr>
-          <td class="entity">Worldline topology</td>
-          <td><em>S<sub>N</sub></em></td>
-          <td class="depth">Strict gauge</td>
-          <td>Global topological functional cannot be represented by any local operator.</td>
-        </tr>
-        <tr>
-          <td class="entity">Quark / gluon identity</td>
-          <td>SU(3) (colour)</td>
-          <td class="depth">Deep kernel</td>
-          <td>Confinement forbids colour-tagged operators. Sea–valence ambiguity is path-integral-level.</td>
-        </tr>
-        <tr>
-          <td class="entity">Graviton number</td>
-          <td>Diff (diffeomorphisms)</td>
-          <td class="depth">Maximal kernel</td>
-          <td>No diff-invariant local number operator exists in full GR.</td>
-        </tr>
-        <tr>
-          <td class="entity">Cosmological particle number</td>
-          <td>Bogoliubov</td>
-          <td class="depth">Maximal kernel</td>
-          <td>Vacuum is not unique in FLRW; <em>N</em> depends on the choice of complex structure.</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- BOUNDARY CROSSING -->
-  <section class="section" id="crossing">
-    <h3>Boundary crossing</h3>
-    <p>
-      Not every kernel distinction is permanently gauge. Some can be promoted to
-      physical by a realizable upgrade to the observer algebra. These are the
-      <em>emergent observables</em>.
-    </p>
-
-    <table class="class-table">
-      <thead>
-        <tr>
-          <th>Distinction</th>
-          <th>Base status</th>
-          <th>Required upgrade</th>
-          <th>Final classification</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="entity">Arrow of time</td>
-          <td>Gauge (ℤ<sub>2</sub>)</td>
-          <td>Memory + feedback (FSO)</td>
-          <td class="depth" style="color: var(--pass);">Emergent observable</td>
-        </tr>
-        <tr>
-          <td class="entity">Neutrino flavour (in flight)</td>
-          <td>Interference-hidden</td>
-          <td>Continuous monitoring (Zeno)</td>
-          <td class="depth" style="color: var(--pass);">Physical (under Model 2)</td>
-        </tr>
-        <tr>
-          <td class="entity">ν vs ν̄ (Dirac)</td>
-          <td>—</td>
-          <td>None — conserved charge</td>
-          <td class="depth" style="color: var(--pass);">Physical</td>
-        </tr>
-        <tr>
-          <td class="entity">ν vs ν̄ (Majorana)</td>
-          <td>Kinematic</td>
-          <td>—</td>
-          <td class="depth" style="color: var(--accent-warm);">Chirality descriptor</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- FSO -->
-  <section class="section" id="fso">
-    <h3>Feedback-stabilized observer</h3>
-    <p>
-      The FSO is the minimal observer that extracts the arrow of time from the
-      kernel. It combines three ingredients: a <em>substrate</em> (the physical
-      system being observed), a <em>sensor</em> (the measurement channel), and
-      an <em>incremental observer</em> with memory, entropy estimation, and a
-      feedback controller that adapts the quantisation resolution <code>k</code>
-      in real time.
-    </p>
-    <p>
-      Working hypothesis (under verification): on substrates with strong mixing, feedback may
-      drive <code>k</code> toward a stable interior value where the estimated entropy rate matches the target.
-      On integrable substrates, <code>k</code> may rail to a boundary or oscillate.
-      If confirmed, substrate class would be inferred from the dynamical signature of the observer’s own state variable.
-      Until then, treat this section as experimental scaffolding, not a finalized result.
-    </p>
-
-    <h4>Live experiment results</h4>
-    <p style="font-size:13px; color: var(--text-dim); margin-bottom:12px;">
-      Output of <code>kernel_joint.py</code> — run 2026-02-02, seed = 0.
-      Outcome rule: Mixing substrates should reach STABLE interior; others should not.
-    </p>
-
-    <div class="note note-finding">
-      <div class="note-label">Unverified finding</div>
-      <p style="margin-bottom:0;">
-        Preliminary run result: in the current implementation (seed = 0, 2026-02-02), all Mixing trials return UNSTABLE.
-        This may reflect controller tuning (η, stride, warmup), estimator mismatch at these alphabet sizes, or a genuine limitation
-        of the Markov-1 + flush-on-k-jump design for this substrate. Do not cite as a conclusion; it is an active debugging target.
-      </p>
-    </div>
-
-    <!-- ANALOG_STANDARD -->
-    <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-dim); margin: 24px 0 8px;">Analog Standard — target sweep</div>
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th>Substrate</th>
-          <th>Target H</th>
-          <th>State</th>
-          <th>Stable%</th>
-          <th>k_med</th>
-          <th>Outcome</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="sub">Integrable</td><td>0.5</td><td class="state-stable">STABLE</td><td>0.743</td><td>24</td><td class="fail">FAIL</td></tr>
-        <tr><td class="sub">Integrable</td><td>1.0</td><td class="state-unstable">UNSTABLE</td><td>0.029</td><td>37</td><td class="pass">PASS</td></tr>
-        <tr><td class="sub">Integrable</td><td>1.5</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>45</td><td class="pass">PASS</td></tr>
-        <tr><td class="sub">Integrable</td><td>2.0</td><td class="state-unstable">UNSTABLE</td><td>0.029</td><td>50</td><td class="pass">PASS</td></tr>
-        <tr class="sweep-group"><td class="sub">PRNG</td><td>0.5</td><td class="state-unstable">UNSTABLE</td><td>0.800</td><td>16</td><td class="pass">PASS</td></tr>
-        <tr><td class="sub">PRNG</td><td>1.0</td><td class="state-unstable">UNSTABLE</td><td>0.614</td><td>16</td><td class="pass">PASS</td></tr>
-        <tr><td class="sub">PRNG</td><td>1.5</td><td class="state-unstable">UNSTABLE</td><td>0.057</td><td>32</td><td class="pass">PASS</td></tr>
-        <tr><td class="sub">PRNG</td><td>2.0</td><td class="state-unstable">UNSTABLE</td><td>0.029</td><td>44</td><td class="pass">PASS</td></tr>
-        <tr class="sweep-group"><td class="sub">Mixing</td><td>0.5</td><td class="state-unstable">UNSTABLE</td><td>0.043</td><td>38</td><td class="fail">FAIL</td></tr>
-        <tr><td class="sub">Mixing</td><td>1.0</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>45</td><td class="fail">FAIL</td></tr>
-        <tr><td class="sub">Mixing</td><td>1.5</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>45</td><td class="fail">FAIL</td></tr>
-        <tr><td class="sub">Mixing</td><td>2.0</td><td class="state-unstable">UNSTABLE</td><td>0.029</td><td>54</td><td class="fail">FAIL</td></tr>
-      </tbody>
-    </table>
-
-    <!-- ANALOG_ROBUST -->
-    <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-dim); margin: 24px 0 8px;">Analog Robust — memory sweep (Mixing only, target H = 1.0)</div>
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th>Memory M</th>
-          <th>State</th>
-          <th>Stable%</th>
-          <th>k_med</th>
-          <th>Outcome</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>25</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>67</td><td class="fail">FAIL</td></tr>
-        <tr><td>50</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>45</td><td class="fail">FAIL</td></tr>
-        <tr><td>100</td><td class="state-unstable">UNSTABLE</td><td>0.000</td><td>34</td><td class="fail">FAIL</td></tr>
-        <tr><td>200</td><td class="state-unstable">UNSTABLE</td><td>0.114</td><td>29</td><td class="fail">FAIL</td></tr>
-      </tbody>
-    </table>
-
-    <h4>Kernel depth hierarchy</h4>
-    <p>
-      The particle classification below is derived from the full corpus of
-      technical notes. Depth increases with the strength of the symmetry acting
-      on the history fiber relative to the observable algebra.
-    </p>
-
-    <div class="hierarchy">
-      <div class="h-level">
-        <div class="h-dot"><div class="h-dot-inner"></div></div>
-        <div class="h-content">
-          <div class="h-title">Level 1 — Shallow kernel</div>
-          <div class="h-sub">Particle concept is robust; number operator is conserved.</div>
-          <div class="h-entities">
-            <span class="h-entity">electron</span>
-            <span class="h-entity">photon</span>
-            <span class="h-entity">Higgs</span>
-          </div>
-        </div>
-      </div>
-      <div class="h-level">
-        <div class="h-dot"><div class="h-dot-inner"></div></div>
-        <div class="h-content">
-          <div class="h-title">Level 2 — Access-dependent</div>
-          <div class="h-sub">Identity dissolves into interference; physical only with upgraded access.</div>
-          <div class="h-entities">
-            <span class="h-entity">neutrino</span>
-            <span class="h-entity">K⁰ / K̄⁰</span>
-            <span class="h-entity">B meson</span>
-          </div>
-        </div>
-      </div>
-      <div class="h-level">
-        <div class="h-dot"><div class="h-dot-inner"></div></div>
-        <div class="h-content">
-          <div class="h-title">Level 3 — Deep kernel (confinement)</div>
-          <div class="h-sub">Identity is erased by non-Abelian gauge invariance. Only bound-state observables survive.</div>
-          <div class="h-entities">
-            <span class="h-entity">quark</span>
-            <span class="h-entity">gluon</span>
-          </div>
-        </div>
-      </div>
-      <div class="h-level">
-        <div class="h-dot"><div class="h-dot-inner"></div></div>
-        <div class="h-content">
-          <div class="h-title">Level 4 — Maximal kernel (coordinate artifact)</div>
-          <div class="h-sub">Particle concept is a choice of chart, not an element of the observable algebra.</div>
-          <div class="h-entities">
-            <span class="h-entity">graviton</span>
-            <span class="h-entity">Unruh quanta</span>
-            <span class="h-entity">FLRW particle</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ═══ TECHNICAL NOTES ═══ -->
-  <div class="group-label">Technical notes</div>
-
-  <section class="section" id="downloads">
-    <h3>Technical notes</h3>
-    <p>
-      The corpus below covers the full scope of the framework as of 2026-02-01.
-      Each note is self-contained; read the formal statement first, then follow
-      whichever thread interests you.
-    </p>
-    <div class="dl-grid">
-      <a class="dl-card" href="#note-electron-identity-andamp-topology">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Electron identity &amp; topology</div>
-        <div class="dl-desc">One-electron postulate under Kernel Law. Wheeler's hypothesis as gauge.</div>
-      </a>
-      <a class="dl-card" href="#note-physical-distinctions">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Physical distinctions</div>
-        <div class="dl-desc">Comparative analysis: electron identity vs. arrow of time.</div>
-      </a>
-      <a class="dl-card" href="#note-neutron-composite-case">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Neutron (composite case)</div>
-        <div class="dl-desc">EFT vs. QCD levels. Kernel growth with compositeness.</div>
-      </a>
-      <a class="dl-card" href="#note-neutrino-distinctions">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Neutrino distinctions</div>
-        <div class="dl-desc">Flavor, mass paths, Majorana vs. Dirac. Interference as kernel signature.</div>
-      </a>
-      <a class="dl-card" href="#note-gravity-andamp-the-graviton">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Gravity &amp; the graviton</div>
-        <div class="dl-desc">Kernel dominance in GR. Why graviton number is coordinate-dependent.</div>
-      </a>
-      <a class="dl-card" href="#note-cosmology">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Cosmology</div>
-        <div class="dl-desc">FLRW particle number as Bogoliubov gauge. The universe as a correlation machine.</div>
-      </a>
-      <a class="dl-card" href="#note-black-holes">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Black holes</div>
-        <div class="dl-desc">Information loss as kernel amplification. Page curve as access artifact.</div>
-      </a>
-      <a class="dl-card" href="#note-thermodynamics-andamp-demons">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Thermodynamics &amp; demons</div>
-        <div class="dl-desc">Maxwell's demon, QEC, Landauer — all as algebra expansion/contraction cycles.</div>
-      </a>
-      <a class="dl-card" href="#note-consciousness">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Consciousness</div>
-        <div class="dl-desc">Exploratory note: observer-algebra framing of subjective reports; unverified and non-final.</div>
-      </a>
-      <a class="dl-card" href="#note-systemic-breakdowns">
-        <div class="dl-icon">📄</div>
-        <div class="dl-name">Systemic breakdowns</div>
-        <div class="dl-desc">Exploratory note: speculative forecasts about model and observer failure modes; unverified.</div>
-      </a>
-    
-<div id="note-electron-identity-andamp-topology" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-andamp-topology-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-electron-identity-andamp-topology-title" class="sheet-title">Electron identity &amp; topology</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>One-electron postulate under Kernel Law. Wheeler's hypothesis as gauge.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf" target="_blank" rel="noopener">Open</a>
+      <iframe src="downloads/notes/example_note.pdf"></iframe>
     </div>
   </div>
-</div>
-
-<div id="note-physical-distinctions" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-physical-distinctions-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-physical-distinctions-title" class="sheet-title">Physical distinctions</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Comparative analysis: electron identity vs. arrow of time.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/physical-distinctions.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-neutron-composite-case" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-neutron-composite-case-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-neutron-composite-case-title" class="sheet-title">Neutron (composite case)</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>EFT vs. QCD levels. Kernel growth with compositeness.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/neutron-composite-case.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-neutrino-distinctions" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-neutrino-distinctions-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-neutrino-distinctions-title" class="sheet-title">Neutrino distinctions</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Flavor, mass paths, Majorana vs. Dirac. Interference as kernel signature.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/neutrino-distinctions.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-gravity-andamp-the-graviton" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-gravity-andamp-the-graviton-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-gravity-andamp-the-graviton-title" class="sheet-title">Gravity &amp; the graviton</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Kernel dominance in GR. Why graviton number is coordinate-dependent.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-cosmology" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-cosmology-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-cosmology-title" class="sheet-title">Cosmology</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>FLRW particle number as Bogoliubov gauge. The universe as a correlation machine.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/cosmology.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/cosmology.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/cosmology.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-black-holes" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-black-holes-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-black-holes-title" class="sheet-title">Black holes</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Information loss as kernel amplification. Page curve as access artifact.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/black-holes.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/black-holes.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/black-holes.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-thermodynamics-andamp-demons" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-thermodynamics-andamp-demons-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-thermodynamics-andamp-demons-title" class="sheet-title">Thermodynamics &amp; demons</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Maxwell's demon, QEC, Landauer — all as algebra expansion/contraction cycles.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-consciousness" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-consciousness-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-consciousness-title" class="sheet-title">Consciousness</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Exploratory note: observer-algebra framing of subjective reports; unverified and non-final.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/consciousness.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/consciousness.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/consciousness.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-<div id="note-systemic-breakdowns" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-systemic-breakdowns-title">
-    <div class="sheet-header">
-      <div>
-        <div id="note-systemic-breakdowns-title" class="sheet-title">Systemic breakdowns</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body">
-      <p>Exploratory note: speculative forecasts about model and observer failure modes; unverified.</p>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom:0;">
-        File links are placeholders. When the note is published, drop the file into <code>/downloads/notes/</code>
-        and keep the filename stable.
-      </p>
-    </div>
-
-    <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/systemic-breakdowns.pdf" target="_blank" rel="noopener">Open</a>
-    </div>
-  </div>
-</div>
-
-</div>
-  </section>
-
-  <!-- CODE -->
-  <section class="section" id="code">
-    <h3>Code</h3>
-    <p>
-      The reference implementation lives in <code>kernel_joint.py</code>.
-      It is a single-file, dependency-light (numpy only) harness for the FSO
-      experiments. Structure:
-    </p>
-
-    <pre><code><span class="comment"># ── Room 1: Substrates (Physics) ──────────────────</span>
-<span class="keyword">class</span> <span class="func">IntegrableCircle</span>   <span class="comment"># irrational rotation, H_∞ = 0</span>
-<span class="keyword">class</span> <span class="func">RandomPRNG</span>        <span class="comment"># iid stream, H_1 ≈ log₂(k)</span>
-<span class="keyword">class</span> <span class="func">StronglyMixingCat</span> <span class="comment"># doubling map, H_∞ = 1 bit</span>
-
-<span class="comment"># ── Room 2: Sensors (Hardware) ─────────────────────</span>
-<span class="keyword">class</span> <span class="func">AnalogStandardSensor</span>  <span class="comment"># clamp → [0,1)</span>
-
-<span class="comment"># ── Room 3: Observer (Feedback + Ledger) ───────────</span>
-<span class="keyword">class</span> <span class="func">IncrementalObserver</span>
-    estimate_H1()   <span class="comment"># Markov-1 entropy rate (bits)</span>
-    process()       <span class="comment"># quantise → FIFO → controller tick</span>
-    flush()         <span class="comment"># hard reset on k-jump</span>
-
-<span class="comment"># ── Runner + Classifier ────────────────────────────</span>
-<span class="func">classify_k_series</span>()   <span class="comment"># → (STABLE | UNSTABLE | RAIL_*)</span>
-<span class="func">run_trial</span>()           <span class="comment"># substrate × observer loop</span>
-<span class="func">run_experiment</span>()     <span class="comment"># sweep + table output</span></code></pre>
-
-    <p>
-      The controller uses a <strong>multiplicative update</strong> on <code>k</code>:
-    </p>
-    <pre><code><span class="comment"># every MEASURE_STRIDE steps:</span>
-H   = observer.estimate_H1()
-err = H - target
-k   = k - η × err × k          <span class="comment"># clip to [k_min, k_max]</span>
-<span class="comment"># if ⌊k⌋ changed → flush (hard reset of ledger)</span></code></pre>
-
-    <p>
-      The flush on every <code>k</code>-jump is deliberate: the symbol alphabet
-      changes, so all transition counts are invalidated. This makes the
-      controller conservative — it pays a full re-warm cost for every
-      quantisation step — but it keeps the entropy estimate exact within each
-      epoch.
-    </p>
-  </section>
-
-  <!-- HASHES -->
-  <section class="section" id="hashes">
-    <h3>Hashes</h3>
-    <p>
-      Reproducibility anchors. These are SHA-256 digests of the files as
-      distributed. Verify before trusting any derivative results.
-    </p>
-    <pre><code><span class="comment"># kernel_joint.py  (2026-02-02, seed=0 reference run)</span>
-sha256  <span class="string">pending</span>   kernel_joint.py
-sha256  <span class="string">pending</span>   Kernel_Notes.txt</code></pre>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ═══ META ═══ -->
-  <div class="group-label">Meta</div>
-
-  <section class="section" id="scope">
-    <h3>Scope &amp; contribution</h3>
-    <p>
-      Many foundational disputes in physics reduce to a single structural question:
-      <em>which distinctions are physically resolvable for a specified observer?</em>
-      Kernel Law formalizes this by treating physical state space as the quotient of
-      history space by the observer kernel induced by an accessible observable algebra.
-    </p>
-    <p>
-      The framework introduces no new dynamical laws and makes no claims that require modifying
-      quantum mechanics, quantum field theory, or general relativity. Its contribution is
-      classificatory: it separates what is <em>observable</em>, what is <em>gauge</em> (observer-invisible),
-      and what becomes observable only after a concrete upgrade to the observer’s access model
-      (memory depth, sampling, or available operators).
-    </p>
-    <p>
-      This lens yields sharp, testable statements about which proposed distinctions can be operationally defined
-      within known physics, and it clarifies why certain questions recur across domains (measurement, irreversibility,
-      horizons, and particle notions): they are often boundary questions about access, not dynamics.
-    </p>
-    <div class="note">
-      <div class="note-label">Non-claims</div>
-      <p style="margin-bottom:0;">
-        This site is a workbench. Any section marked “unverified” is experimental or exploratory and should not be treated as a settled claim.
-      </p>
-    </div>
-</section>
-
-  <section class="section" id="citation">
-    <h3>Citation</h3>
-    <p style="font-size:14px; color: var(--text-dim);">
-      interfaceboundary.org · Kernel Law v0.3 · 2026-02-01
-    </p>
-    <pre><code>@misc&#123;kernellaw2026,
-  title   = &#123;Kernel Law: Observer Limits and Identifiability&#123;,
-  author  = &#123;Interface Boundary&#123;,
-  year    = &#123;2026&#123;,
-  url     = &#123;https://interfaceboundary.org&#123;
-&#125;</code></pre>
-  </section>
-
-  <!-- FOOTER -->
-  
-<div id="note-electron-identity" class="sheet-modal">
-  <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-title">
-    <div class="sheet-header">
-      <div>
-        <div class="sheet-title" id="note-electron-identity-title">Electron identity &amp; topology</div>
-        <div class="sheet-meta">Technical note · full text viewer</div>
-      </div>
-      <div style="text-align:right;">
-        <span class="sheet-status draft">Draft</span><br>
-        <a class="sheet-close" href="#downloads">Close</a>
-      </div>
-    </div>
-
-    <div class="sheet-body" style="margin-bottom:0;">
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 10px;">
-        This viewer loads the full note from <code>/downloads/notes/electron-identity-topology.html</code>. If the file is not yet present,
-        you’ll see the fallback instructions below.
-      </p>
-
-      <div class="sheet-viewer">
-        <iframe src="/downloads/notes/electron-identity-topology.html" title="Electron identity &amp; topology — full note" loading="lazy"></iframe>
-        <div class="viewer-fallback">
-          <div style="font-family: var(--mono); font-size: 10px; letter-spacing:0.12em; text-transform:uppercase; color: var(--accent-dim); margin-bottom: 10px;">
-            File not found? Drop-in path
-          </div>
-          <p style="margin-bottom:10px;">
-            Add the rendered note file at:
-            <code>downloads/notes/electron-identity-topology.html</code>
-          </p>
-          <p style="margin-bottom:0; color: var(--text-dim);">
-            Tip: keep filenames stable; the pop-out will display whatever is at that path.
-          </p>
-        </div>
-      </div>
-
-      <div class="sheet-actions" style="margin-top: 14px;">
-        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.pdf">Download PDF</a>
-        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.md">Download MD</a>
-        <a class="sheet-btn" href="/downloads/notes/electron-identity-topology.html" target="_blank" rel="noopener">Open</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  <footer class="page-footer">
-    <p>interfaceboundary.org · Kernel Law v0.3 · © 2026</p>
-  </footer>
-
-</main>
-
-<!-- ─── NAV ACTIVE STATE (scroll spy) ─── -->
-<script>
-(function(){
-  const links = document.querySelectorAll('.nav-group a');
-  const sections = [];
-  links.forEach(a => {
-    const id = a.getAttribute('href').replace('#','');
-    const el = document.getElementById(id);
-    if (el) sections.push({ a, el, id });
-  });
-
-  function update() {
-    const scrollY = window.scrollY + 120;
-    let current = sections[0];
-    for (const s of sections) {
-      if (s.el.offsetTop <= scrollY) current = s;
-    }
-    links.forEach(a => a.classList.remove('active'));
-    if (current) current.a.classList.add('active');
-  }
-
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-})();
-</script>
 
 </body>
 </html>
