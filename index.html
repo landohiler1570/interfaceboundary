@@ -49,15 +49,23 @@ body {
 /* ─── SIDEBAR ─── */
 .sidebar {
   position: fixed;
+  display: flex;
+  flex-direction: column;
   top: 0; left: 0;
   width: 220px;
   height: 100vh;
   background: var(--bg-panel);
   border-right: 1px solid var(--rule);
-  overflow-y: auto;
+  overflow: hidden;
   z-index: 100;
   padding: 48px 0 40px;
 }
+.sidebar-scroll{
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 16px;
+}
+
 .sidebar-logo {
   padding: 0 28px;
   margin-bottom: 48px;
@@ -114,10 +122,9 @@ body {
 }
 
 .sidebar-footer {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
   padding: 20px 28px;
   border-top: 1px solid var(--rule);
+  background: var(--bg-panel);
 }
 .sidebar-footer a {
   font-family: var(--mono);
@@ -737,6 +744,7 @@ pre code {
 
 <!-- ─── SIDEBAR ─── -->
 <aside class="sidebar">
+  <div class="sidebar-scroll">
   <div class="sidebar-logo">
     <span class="logo-word">Kernel Law</span>
     <span class="logo-sub">interfaceboundary.org</span>
@@ -775,6 +783,7 @@ pre code {
       <a href="#citation">Citation</a>
     </div>
   </nav>
+  </div>
 
   <div class="sidebar-footer">
     <a href="#">interfaceboundary.org</a>
@@ -1292,7 +1301,7 @@ pre code {
       whichever thread interests you.
     </p>
     <div class="dl-grid">
-      <a class="dl-card" href="#note-electron-identity-andamp-topology">
+      <a class="dl-card" href="#note-electron-identity-and-topology">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Electron identity &amp; topology</div>
         <div class="dl-desc">One-electron postulate under Kernel Law. Wheeler's hypothesis as gauge.</div>
@@ -1312,7 +1321,7 @@ pre code {
         <div class="dl-name">Neutrino distinctions</div>
         <div class="dl-desc">Flavor, mass paths, Majorana vs. Dirac. Interference as kernel signature.</div>
       </a>
-      <a class="dl-card" href="#note-gravity-andamp-the-graviton">
+      <a class="dl-card" href="#note-gravity-and-the-graviton">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Gravity &amp; the graviton</div>
         <div class="dl-desc">Kernel dominance in GR. Why graviton number is coordinate-dependent.</div>
@@ -1327,7 +1336,7 @@ pre code {
         <div class="dl-name">Black holes</div>
         <div class="dl-desc">Information loss as kernel amplification. Page curve as access artifact.</div>
       </a>
-      <a class="dl-card" href="#note-thermodynamics-andamp-demons">
+      <a class="dl-card" href="#note-thermodynamics-and-demons">
         <div class="dl-icon">📄</div>
         <div class="dl-name">Thermodynamics &amp; demons</div>
         <div class="dl-desc">Maxwell's demon, QEC, Landauer — all as algebra expansion/contraction cycles.</div>
@@ -1343,13 +1352,13 @@ pre code {
         <div class="dl-desc">Exploratory note: speculative forecasts about model and observer failure modes; unverified.</div>
       </a>
     
-<div id="note-electron-identity-andamp-topology" class="sheet-modal">
+<div id="note-electron-identity-and-topology" class="sheet-modal">
   <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-andamp-topology-title">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-electron-identity-and-topology-title">
     <div class="sheet-header">
       <div>
-        <div id="note-electron-identity-andamp-topology-title" class="sheet-title">Electron identity &amp; topology</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div id="note-electron-identity-and-topology-title" class="sheet-title">Electron identity &amp; topology</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1366,9 +1375,9 @@ pre code {
     </div>
 
     <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/electron-identity-andamp-topology.pdf" target="_blank" rel="noopener">Open</a>
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-and-topology.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-and-topology.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/electron-identity-and-topology.pdf" target="_blank" rel="noopener">Open</a>
     </div>
   </div>
 </div>
@@ -1379,7 +1388,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-physical-distinctions-title" class="sheet-title">Physical distinctions</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1409,7 +1418,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-neutron-composite-case-title" class="sheet-title">Neutron (composite case)</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1439,7 +1448,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-neutrino-distinctions-title" class="sheet-title">Neutrino distinctions</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1463,13 +1472,13 @@ pre code {
   </div>
 </div>
 
-<div id="note-gravity-andamp-the-graviton" class="sheet-modal">
+<div id="note-gravity-and-the-graviton" class="sheet-modal">
   <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-gravity-andamp-the-graviton-title">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-gravity-and-the-graviton-title">
     <div class="sheet-header">
       <div>
-        <div id="note-gravity-andamp-the-graviton-title" class="sheet-title">Gravity &amp; the graviton</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div id="note-gravity-and-the-graviton-title" class="sheet-title">Gravity &amp; the graviton</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1486,9 +1495,9 @@ pre code {
     </div>
 
     <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/gravity-andamp-the-graviton.pdf" target="_blank" rel="noopener">Open</a>
+      <a class="sheet-btn" href="/downloads/notes/gravity-and-the-graviton.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/gravity-and-the-graviton.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/gravity-and-the-graviton.pdf" target="_blank" rel="noopener">Open</a>
     </div>
   </div>
 </div>
@@ -1499,7 +1508,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-cosmology-title" class="sheet-title">Cosmology</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1529,7 +1538,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-black-holes-title" class="sheet-title">Black holes</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1553,13 +1562,13 @@ pre code {
   </div>
 </div>
 
-<div id="note-thermodynamics-andamp-demons" class="sheet-modal">
+<div id="note-thermodynamics-and-demons" class="sheet-modal">
   <a class="sheet-backdrop" href="#downloads" aria-label="Close"></a>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-thermodynamics-andamp-demons-title">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="note-thermodynamics-and-demons-title">
     <div class="sheet-header">
       <div>
-        <div id="note-thermodynamics-andamp-demons-title" class="sheet-title">Thermodynamics &amp; demons</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div id="note-thermodynamics-and-demons-title" class="sheet-title">Thermodynamics &amp; demons</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1576,9 +1585,9 @@ pre code {
     </div>
 
     <div class="sheet-actions">
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf">Download PDF</a>
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.md">Download MD</a>
-      <a class="sheet-btn" href="/downloads/notes/thermodynamics-andamp-demons.pdf" target="_blank" rel="noopener">Open</a>
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-and-demons.pdf">Download PDF</a>
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-and-demons.md">Download MD</a>
+      <a class="sheet-btn" href="/downloads/notes/thermodynamics-and-demons.pdf" target="_blank" rel="noopener">Open</a>
     </div>
   </div>
 </div>
@@ -1589,7 +1598,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-consciousness-title" class="sheet-title">Consciousness</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
@@ -1619,7 +1628,7 @@ pre code {
     <div class="sheet-header">
       <div>
         <div id="note-systemic-breakdowns-title" class="sheet-title">Systemic breakdowns</div>
-        <div class="sheet-meta">Technical note · placeholders until files are published</div>
+        <div class="sheet-meta">Technical note · drop in PDF to publish</div>
       </div>
       <div style="text-align:right;">
         <span class="sheet-status draft">Draft</span><br>
